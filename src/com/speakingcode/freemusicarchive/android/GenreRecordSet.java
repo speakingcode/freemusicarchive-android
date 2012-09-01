@@ -3,16 +3,16 @@ package com.speakingcode.freemusicarchive.android;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TrackRecordSet
+public class GenreRecordSet
 {
-	ArrayList<Track> trackRecords;
+	ArrayList<Genre> genreRecords;
 	int total;
 	int totalPages;
 	int currentPage;
 	
-	public TrackRecordSet(ArrayList<Track> records, int total, int totalPages, int currentPage)
+	public GenreRecordSet(ArrayList<Genre> records, int total, int totalPages, int currentPage)
 	{
-		this.trackRecords	= records;
+		this.genreRecords	= records;
 		this.total			= total;
 		this.totalPages		= totalPages;
 		this.currentPage	= currentPage;
@@ -43,37 +43,37 @@ public class TrackRecordSet
 		this.currentPage = currentPage;
 	}
 
-	public ArrayList<Track> getTrackRecords()
+	public ArrayList<Genre> getGenreRecords()
 	{
-		return trackRecords;
+		return genreRecords;
 	}
 	
-	public void setTrackRecords(ArrayList<Track> records)
+	public void setGenreRecords(ArrayList<Genre> records)
 	{
-		this.trackRecords = records;
+		this.genreRecords = records;
 	}
 	
-	public void addTracks(ArrayList<Track> newTracks)
+	public void addGenres(ArrayList<Genre> newGenres)
 	{
-		this.trackRecords.addAll(newTracks);
+		this.genreRecords.addAll(newGenres);
 	}
 	
-	public void addTrack(Track newTrack)
+	public void addGenre(Genre newGenre)
 	{
-		this.trackRecords.add(newTrack);
+		this.genreRecords.add(newGenre);
 	}
 	
-	public void removeTrack(Track trackToRemove)
+	public void removeGenre(Genre genreToRemove)
 	{
-		this.trackRecords.remove(trackToRemove);
+		this.genreRecords.remove(genreToRemove);
 	}
 	
-	public void removeTrack(String removeTrackId)
+	public void removeGenre(String removeGenreId)
 	{
-		Iterator<Track> i = trackRecords.iterator();
+		Iterator<Genre> i = genreRecords.iterator();
 		while (i.hasNext())
 		{
-			if (i.next().getTrackId() == removeTrackId)
+			if (i.next().getGenreId() == removeGenreId)
 				i.remove();
 		}
 	}

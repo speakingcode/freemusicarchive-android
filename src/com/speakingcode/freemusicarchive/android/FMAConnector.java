@@ -35,12 +35,22 @@ public class FMAConnector
 	public static final String tracksAction			= "tracks";
 	final String TAG								= "FMAConnector";
 	
+	
+	
+	
+	
 	/**
-	 * @param action
+	 * ************************************************************
+	 * **********************Web Service API***********************
+	 * ************************************************************
+	 */
+	
+	/**
+	 * @param dataset
 	 * @param args
 	 * @return
 	 */
-	public String getRequestUrl(String action, ArrayList<String> args, String dataFormat)
+	public String createRequestUrl(String dataset, ArrayList<String> args, String dataFormat)
 	{
 		String argString = "";
 		for (String arg : args)
@@ -54,9 +64,9 @@ public class FMAConnector
 		if (dataFormat == null || dataFormat == "")
 			dataFormat = defaultDataFormat;
 		
-		String requestUrl = (baseUrl + apiUrl + action + dataFormat
+		String requestUrl = (baseUrl + apiUrl + dataset + dataFormat
 				+ "?" + "api_key=" + apiKey + argString);
-		Log.i(TAG, "**getRequestUrl() called with action: " + action + " dataFormat: " + dataFormat + "**");
+		Log.i(TAG, "**getRequestUrl() called with action: " + dataset + " dataFormat: " + dataFormat + "**");
 		Log.i(TAG, requestUrl);
 		Log.i(TAG, "****************************************");
 		
@@ -64,18 +74,19 @@ public class FMAConnector
 	}
 	
 	/**
-	 * @param action
-	 * @param args
+	 * Builds a REST API request URL for JSON response based on the provided dataset and arguments,
+	 * @param dataset The API action to hit
+	 * @param args The arguments to pass to the REST API
 	 * @return
 	 */
-	public String getJSONRequestUrl(String action, ArrayList<String> args)
+	public String createJSONRequestUrl(String dataset, ArrayList<String> args)
 	{
-		return getRequestUrl(action, args, FMAConnector.dataFormatJson);
+		return createRequestUrl(dataset, args, FMAConnector.dataFormatJson);
 	}
 	
- 	public String getXMLRequestUrl(String action, ArrayList<String> args)
+ 	public String createXMLRequestUrl(String dataset, ArrayList<String> args)
  	{
- 		return getRequestUrl(action, args, FMAConnector.dataFormatXml);
+ 		return createRequestUrl(dataset, args, FMAConnector.dataFormatXml);
  	}
 	
 	/**
@@ -107,7 +118,6 @@ public class FMAConnector
 		{  
 			e.printStackTrace();
 			Log.e(TAG, "IOException in callWebService(). " + e.getMessage());
-  
 		}
 		
 		httpclient.getConnectionManager().shutdown(); 
@@ -117,6 +127,15 @@ public class FMAConnector
 		
 		return result;
 	}
+	
+	
+	
+	
+	/**
+	 * **********************************************************
+	 * **********************Track Records***********************
+	 * **********************************************************
+	 */
 	
 	/**
 	 * Retrieves <code>limit</code> many track records from the tracks dataset, starting from the
@@ -143,7 +162,9 @@ public class FMAConnector
 	 * @param minDuration include tracks at least as long as (must be in 'HH:MM:SS' format)
 	 * @param maxDuration include tracks no longer than (must be in 'HH:MM:SS' format)
 	 * @param limit the number of records to fetch at once, between 1 and 20
-	 * @param page the page of the recordset to retrieve 
+	 * @param page the page of the recordset to retrieve
+	 * @param sortBy A field to sort by (must be one of the returned values)
+	 * @param sortDir The directin to sort (asc or desc)
 	 * @return
 	 */
 	public TrackRecordSet getTrackRecordSet(String trackId, String artistId, String albumId,
@@ -151,8 +172,9 @@ public class FMAConnector
 			String albumUrl, String albumTitle, String albumHandle, boolean commercial,
 			boolean remix, boolean podcast, boolean video, boolean addedWeek, boolean addedMonth,
 			boolean onlyInstrumental, boolean radioSafe, String minDuration, String maxDuration,
-			int limit, int page)
+			int limit, int page, String sortBy, String sortDir)
 	{
+		//add the args to an array for the query url
 		//don't include null, empty or false fields.
 		ArrayList<String> args = new ArrayList<String>();
 		
@@ -218,24 +240,45 @@ public class FMAConnector
 		
 		args.add( (limit < 1 || limit > 20) ? ("limit:20") : ("limit:" + limit));
 		
-		args.add("page:" + page);
+		if ( !(sortBy == null || sortBy == "" ))
+			args.add("sort_by:" + sortBy);
 		
-		String responseJSON = callWebService(getJSONRequestUrl("tracks", args));
-		return new TrackRecordSet(getTrackListFromJSONResponse(responseJSON));
+		if (sortDir == "asc" || sortDir == "desc")
+			args.add("sort_dir:" + sortDir);
+		
+		String responseJSON = callWebService(createJSONRequestUrl("tracks", args));
+		
+		int totalItems			= getTotalItemsFromJSONResponse(responseJSON);
+		int totalPages			= getTotalPagesFromJSONResponse(responseJSON);
+		int currentPage			= getPageFromJSONResponse(responseJSON);
+		return new TrackRecordSet(getTrackListFromJSONResponse(responseJSON), totalItems, totalPages, currentPage);
 		
 	}
-	
+
 	/**
-	 * Convenience method for getting unfiltered track record sets 
+	 * Convenience method for getting unfiltered, unsorted track record sets 
 	 * @param limit the number of records to pull, 1-20
 	 * @param page the offset to pull from, with limit per page 
 	 * @return
 	 */
 	public TrackRecordSet getTrackRecordSet(int limit, int page)
 	{
+		return getTrackRecordSet(limit, page, null, null);
+	}
+	
+	/**
+	 * Convenience method for getting unfiltered track record sets 
+	 * @param limit the number of records to pull, 1-20
+	 * @param page the offset to pull from, with limit per page 
+	 * @param sortBy the returned field to sort by
+	 * @param sortDir the directino to sort ("asc" or "desc")
+	 * @return
+	 */
+	public TrackRecordSet getTrackRecordSet(int limit, int page, String sortBy, String sortDir)
+	{
 		return getTrackRecordSet(null, null, null, null, null, null, null, null,
 				null, null, false, false, false, false, false, false, false,
-				false, null,null, limit, page);
+				false, null,null, limit, page, null, null);
 	}
 	
 	/**
@@ -291,7 +334,7 @@ public class FMAConnector
 	/**
 	 * Builds a Track object from a source JSON object representing an audio/song track
 	 * @param jsonTrackObject the JSON object representing the track
-	 * @return a Track object with the same data as the JSON object
+	 * @return a Track object with fields populated from the provided JSON object
 	 */
 	private Track getTrackFromJSONObject(JSONObject jsonTrackObject)
 	{
@@ -333,10 +376,124 @@ public class FMAConnector
 		catch (JSONException e)
 		{
 			Log.e(TAG, "JSONException in getTrackFromJSONObject(): " + e.getMessage());
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return track;
+	}
+	
+	
+	
+	/**
+	 * **********************************************************
+	 * **********************Genre Records***********************
+	 * **********************************************************
+	 */
+	
+	
+	public void getGenreRecordSet()
+	{
+		String responseJSON = callWebService(createJSONRequestUrl("genres", null));
+		
+
+	}
+	
+	/**
+	 * Builds a Genre object from a source JSON object representing a genre
+	 * @param jsonTrackObject the JSON object representing the genre
+	 * @return a Genre object with fields populated from the proviced JSON object
+	 */
+	public void getGenreFromJSONObject(JSONObject jsonGenreObject)
+	{
+		Genre genre = new Genre();
+		try
+		{
+			genre.setGenreColor(jsonGenreObject.getString("album_id"));
+			genre.setGenreHandle(jsonGenreObject.getString("genre_handle"));
+			genre.setGenreId(jsonGenreObject.getString("genre_id"));
+			genre.setGenreParentId(jsonGenreObject.getString("parent_id"));
+			genre.setGenreTitle(jsonGenreObject.getString("genre_title"));
+		}
+		catch (JSONException e)
+		{
+			Log.e(TAG, "JSONException in getGenreFromJSONObject(): " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * **********************************************************
+	 * **********************General JSON ***********************
+	 * **********************************************************
+	 */
+	
+	
+	/**
+	 * Gets the record set's page in the source dataset
+	 * @param jsonResponseString
+	 * @return
+	 */
+	private int getPageFromJSONResponse(String jsonResponseString)
+	{
+		int page = -1;
+		try
+		{
+			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
+			page = jsonResponseObject.getInt("page");
+			
+		}
+		catch(JSONException e)
+		{
+			Log.e(TAG, "JSONException in getPageFromJSONResponse(): " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return page;
+	}
+
+	/**
+	 * Gets the total number of pages in a dataset
+	 * @param jsonResponseString
+	 * @return
+	 */
+	private int getTotalPagesFromJSONResponse(String jsonResponseString)
+	{
+		int totalPages = -1;
+		try
+		{
+			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
+			totalPages = jsonResponseObject.getInt("pages");
+			
+		}
+		catch(JSONException e)
+		{
+			Log.e(TAG, "JSONException in getTotalPagesFromJSONResponse(): " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return totalPages;
+	}
+
+	/**
+	 * Gets the total number of items in a dataset
+	 * @param jsonResponseString
+	 * @return
+	 */
+	private int getTotalItemsFromJSONResponse(String jsonResponseString)
+	{
+		int totalItems = -1;
+		try
+		{
+			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
+			totalItems = jsonResponseObject.getInt("total");
+			
+		}
+		catch(JSONException e)
+		{
+			Log.e(TAG, "JSONException in getTotalPagesFromJSONResponse(): " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return totalItems;
 	}
 }
