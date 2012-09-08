@@ -18,28 +18,34 @@ public class GenreRecordSet
 		this.currentPage	= currentPage;
 	}
 	
-	public int getTotal() {
+	public int getTotal()
+	{
 		return total;
 	}
 
-	public void setTotal(int total) {
+	public void setTotal(int total)
+	{
 		this.total = total;
 	}
 
-	public int getTotalPages() {
+	public int getTotalPages()
+	{
 		return totalPages;
 	}
 
-	public void setTotalPages(int totalPages) {
+	public void setTotalPages(int totalPages)
+	{
 		this.totalPages = totalPages;
 	}
 
 	
-	public int getCurrentPage() {
+	public int getCurrentPage()
+	{
 		return currentPage;
 	}
 
-	public void setCurrentPage(int currentPage) {
+	public void setCurrentPage(int currentPage)
+	{
 		this.currentPage = currentPage;
 	}
 

@@ -53,12 +53,16 @@ public class FMAConnector
 	public String createRequestUrl(String dataset, ArrayList<String> args, String dataFormat)
 	{
 		String argString = "";
-		for (String arg : args)
+		if (args != null)
 		{
-			if (arg == null) continue;
+			for (String arg : args)
 			
-			String[] argKeyValuePair = arg.split(":");
-			argString += ("&" + argKeyValuePair[0] + "=" + argKeyValuePair[1]);
+			{
+				if (arg == null) continue;
+				
+				String[] argKeyValuePair = arg.split(":");
+				argString += ("&" + argKeyValuePair[0] + "=" + argKeyValuePair[1]);
+			}
 		}
 		
 		if (dataFormat == null || dataFormat == "")
@@ -282,7 +286,7 @@ public class FMAConnector
 	}
 	
 	/**
-	 * Parses a String representation of a JSON track-response object
+	 * Parses a String representation of a JSON track query response object
 	 * and returns an ArrayList of Track objects obtained from the response object
 	 * @param jsonTracksResponseString a String representation of a JSON object response from
 	 * a track request.
@@ -391,11 +395,68 @@ public class FMAConnector
 	 */
 	
 	
-	public void getGenreRecordSet()
+	/**
+	 * 
+	 */
+	public GenreRecordSet getGenreRecordSet()
 	{
 		String responseJSON = callWebService(createJSONRequestUrl("genres", null));
 		
+		int totalItems			= getTotalItemsFromJSONResponse(responseJSON);
+		int totalPages			= getTotalPagesFromJSONResponse(responseJSON);
+		int currentPage			= getPageFromJSONResponse(responseJSON);
+		return new GenreRecordSet(getGenreListFromJSONResponse(responseJSON), totalItems, totalPages, currentPage);
 
+	}
+	
+	/**
+	 * Parses a String representation of a JSON genre query response object
+	 * and returns an ArrayList of Genre objects obtained from the response object
+	 * @param jsonGenresResponseString a String representation of a JSON object response from
+	 * a genre request.
+	 * @return an ArrayList of Genre objects obtained from the response object
+	 */
+	public ArrayList<Genre> getGenreListFromJSONResponse(String jsonGenresResponseString)
+	{
+		ArrayList<Genre> genreList;
+		try
+		{
+			JSONObject jsonResponseObject = new JSONObject(jsonGenresResponseString);
+			genreList = getGenreListFromJSONResponse(jsonResponseObject);
+		}
+		catch (JSONException e)
+		{
+			Log.e(TAG, "JSONException in getGenreListFromJSONResponse(): " + e.getMessage());
+			e.printStackTrace();
+			genreList = new ArrayList<Genre>();
+		}
+		
+		Log.i(TAG, "*****getGenreListFromJSONResponse() completed.******");
+		for (Genre genre : genreList)
+		{
+			Log.i(TAG, "genreId: " + genre.getGenreId() + "; genre title: " + genre.getGenreTitle());
+		}
+		return genreList;
+	}
+	
+	/**
+	 * Parses a JSON genre query response object and returns an ArrayList of Genre objects
+	 * obtained from the response object
+	 * @param jsonGenreResponseObject a JSON object response from
+	 * a genre request.
+	 * @return an ArrayList of Genre objects obtained from the response object
+	 * @throws JSONException 
+	 */
+	public ArrayList<Genre> getGenreListFromJSONResponse(JSONObject jsonGenreResponseObject)
+			throws JSONException
+	{
+		ArrayList<Genre> genreList = new ArrayList<Genre>();
+		JSONArray genres = jsonGenreResponseObject.getJSONArray("dataset");
+		for (int i = 0; i < genres.length(); i++)
+		{
+			genreList.add(getGenreFromJSONObject(genres.getJSONObject(i)));
+		}
+		return genreList;
 	}
 	
 	/**
@@ -403,12 +464,12 @@ public class FMAConnector
 	 * @param jsonTrackObject the JSON object representing the genre
 	 * @return a Genre object with fields populated from the proviced JSON object
 	 */
-	public void getGenreFromJSONObject(JSONObject jsonGenreObject)
+	public Genre getGenreFromJSONObject(JSONObject jsonGenreObject)
 	{
 		Genre genre = new Genre();
 		try
 		{
-			genre.setGenreColor(jsonGenreObject.getString("album_id"));
+			genre.setGenreColor(jsonGenreObject.getString("genre_color"));
 			genre.setGenreHandle(jsonGenreObject.getString("genre_handle"));
 			genre.setGenreId(jsonGenreObject.getString("genre_id"));
 			genre.setGenreParentId(jsonGenreObject.getString("parent_id"));
@@ -419,11 +480,190 @@ public class FMAConnector
 			Log.e(TAG, "JSONException in getGenreFromJSONObject(): " + e.getMessage());
 			e.printStackTrace();
 		}
+		
+		return genre;
 	}
+	
+	
+	
+	
 	
 	/**
 	 * **********************************************************
-	 * **********************General JSON ***********************
+	 * **********************Album Records***********************
+	 * **********************************************************
+	 */
+	
+	/**
+	 * @param limit the number of records to fetch at once, between 1 and 20
+	 * @param page the page of the recordset to retrieve
+	 * @param sortBy A field to sort by (must be one of the returned values)
+	 * @param sortDir The directin to sort (asc or desc)
+	 * @return
+	 */
+	public AlbumRecordSet getAlbumRecordSet(String albumHandle, String artistId, String artistHandle, String genreHandle,
+			String curatorHandle, String albumUrl, String albumTitle, int limit, int page, String sortBy, String sortDir)
+	{
+		//add the args to an array for the query url
+		//don't include null, empty or false fields.
+		ArrayList<String> args = new ArrayList<String>();
+		
+		if ( !(albumHandle == null || albumHandle == "" ) )
+			args.add("album_handle:" + albumHandle);
+		
+		if ( !(artistId == null || artistId == "" ) )
+			args.add("artist_id:" + artistId);
+
+		if ( !(artistHandle == null || artistHandle == "" ) )
+			args.add("artist_handle:" + artistHandle);
+		
+		if ( !(genreHandle == null || genreHandle == "" ) )
+			args.add("genre_handle:" + genreHandle);
+		
+		if ( !(curatorHandle == null || curatorHandle == "" ) )
+			args.add("curator_handle:" + curatorHandle);
+	
+		if ( !(albumUrl == null || albumUrl == "" ) )
+			args.add("album_url:" + albumUrl);
+		
+		if ( !(albumTitle == null || albumTitle == "" ) )
+			args.add("album_title:" + albumTitle);
+		
+		args.add( (limit < 1 || limit > 20) ? ("limit:20") : ("limit:" + limit));
+		
+		if ( !(sortBy == null || sortBy == "" ))
+			args.add("sort_by:" + sortBy);
+		
+		if (sortDir == "asc" || sortDir == "desc")
+			args.add("sort_dir:" + sortDir);
+		
+		String responseJSON = callWebService(createJSONRequestUrl("albums", args));
+		
+		int totalItems			= getTotalItemsFromJSONResponse(responseJSON);
+		int totalPages			= getTotalPagesFromJSONResponse(responseJSON);
+		int currentPage			= getPageFromJSONResponse(responseJSON);
+		return new AlbumRecordSet(getAlbumListFromJSONResponse(responseJSON), totalItems, totalPages, currentPage);
+		
+	}
+	
+	
+	/**
+	 * Convenience method for getting unfiltered, unsorted album record sets 
+	 * @param limit the number of records to pull, 1-20
+	 * @param page the offset to pull from, with limit per page 
+	 * @return
+	 */
+	public AlbumRecordSet getAlbumRecordSet(int limit, int page)
+	{
+		return getAlbumRecordSet(limit, page, null, null);
+	}
+	
+	/**
+	 * Convenience method for getting unfiltered album record sets 
+	 * @param limit the number of records to pull, 1-20
+	 * @param page the offset to pull from, with limit per page 
+	 * @param sortBy the returned field to sort by
+	 * @param sortDir the directino to sort ("asc" or "desc")
+	 * @return
+	 */
+	public AlbumRecordSet getAlbumRecordSet(int limit, int page, String sortBy, String sortDir)
+	{
+		return getAlbumRecordSet(null, null, null, null, null, null, null, null,
+				null, null, false, false, false, false, false, false, false,
+				false, null,null, limit, page, null, null);
+	}
+	
+	/**
+	 * Parses a String representation of a JSON album query response object
+	 * and returns an ArrayList of Album objects obtained from the response object
+	 * @param jsonAlbumsResponseString a String representation of a JSON object response from
+	 * a album request.
+	 * @return an ArrayList of Album objects obtained from the response object
+	 */
+	public ArrayList<Album> getAlbumListFromJSONResponse(String jsonAlbumsResponseString)
+	{
+		ArrayList<Album> albumList;
+		try
+		{
+			JSONObject jsonResponseObject = new JSONObject(jsonAlbumsResponseString);
+			albumList = getAlbumListFromJSONResponse(jsonResponseObject);
+		}
+		catch (JSONException e)
+		{
+			Log.e(TAG, "JSONException in getAlbumListFromJSONResponse(): " + e.getMessage());
+			e.printStackTrace();
+			albumList = new ArrayList<Album>();
+		}
+		
+		Log.i(TAG, "*****getAlbumListFromJSONResponse() completed.******");
+		for (Album album : albumList)
+		{
+			Log.i(TAG, "albumId: " + album.getAlbumId() + "; album title: " + album.getAlbumTitle());
+		}
+		return albumList;
+	}
+	
+	/**
+	 * Parses a JSON album-response object and returns an ArrayList of Album objects
+	 * obtained from the response object
+	 * @param jsonAlbumsResponseObject a JSON object response from
+	 * a album request.
+	 * @return an ArrayList of Album objects obtained from the responce object
+	 * @throws JSONException 
+	 */
+	public ArrayList<Album> getAlbumListFromJSONResponse(JSONObject jsonAlbumsResponseObject)
+			throws JSONException
+	{
+		ArrayList<Album> albumList = new ArrayList<Album>();
+		JSONArray albums = jsonAlbumsResponseObject.getJSONArray("dataset");
+		for (int i = 0; i < albums.length(); i++)
+		{
+			albumList.add(getAlbumFromJSONObject(albums.getJSONObject(i)));
+		}
+		return albumList;
+	}
+
+	/**
+	 * Builds a Album object from a source JSON object representing an audio/song album
+	 * @param jsonAlbumObject the JSON object representing the album
+	 * @return a Album object with fields populated from the provided JSON object
+	 */
+	private Album getAlbumFromJSONObject(JSONObject jsonAlbumObject)
+	{
+		Album album = new Album();
+		try
+		{
+			album.setAlbumId			(jsonAlbumObject.getString("album_id"));
+			album.setAlbumTitle			(jsonAlbumObject.getString("album_title"));
+			album.setAlbumHandle			(jsonAlbumObject.getString("album_handle"));
+			album.setAlbumType			(jsonAlbumObject.getString("album_type"));
+			album.setAlbumUrl			(jsonAlbumObject.getString("album_url"));
+			album.setArtistName			(jsonAlbumObject.getString("artist_name"));
+			album.setArtistUrl			(jsonAlbumObject.getString("artist_url"));
+			album.setAlbumDateReleased	(jsonAlbumObject.getString("album_date_released"));
+			album.setAlbumDateCreated	(jsonAlbumObject.getString("album_date_created"));
+			album.setAlbumListens		(jsonAlbumObject.getString("album_listens"));
+			album.setAlbumPublisher		(jsonAlbumObject.getString("album_publisher"));
+
+
+		}
+		catch (JSONException e)
+		{
+			Log.e(TAG, "JSONException in getAlbumFromJSONObject(): " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return album;
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * **********************************************************
+	 * ****************** General Response Handling *************
 	 * **********************************************************
 	 */
 	
