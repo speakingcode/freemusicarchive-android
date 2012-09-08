@@ -13,6 +13,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.freemusicarchive.api.Album;
+import com.freemusicarchive.api.AlbumRecordSet;
+import com.freemusicarchive.api.Genre;
+import com.freemusicarchive.api.GenreRecordSet;
+import com.freemusicarchive.api.Track;
+import com.freemusicarchive.api.TrackRecordSet;
+
 import android.util.Log;
 
 public class FMAConnector
@@ -568,9 +575,7 @@ public class FMAConnector
 	 */
 	public AlbumRecordSet getAlbumRecordSet(int limit, int page, String sortBy, String sortDir)
 	{
-		return getAlbumRecordSet(null, null, null, null, null, null, null, null,
-				null, null, false, false, false, false, false, false, false,
-				false, null,null, limit, page, null, null);
+		return getAlbumRecordSet(null, null, null, null, null, null, null, limit, page, sortBy, sortDir);
 	}
 	
 	/**

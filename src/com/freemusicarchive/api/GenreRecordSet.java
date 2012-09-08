@@ -1,4 +1,4 @@
-package com.speakingcode.freemusicarchive.android;
+package com.freemusicarchive.api;
 
 import java.util.ArrayList;
 import java.util.Iterator;
