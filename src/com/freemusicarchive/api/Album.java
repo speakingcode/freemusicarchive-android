@@ -2,18 +2,22 @@ package com.freemusicarchive.api;
 
 public class Album
 {
-	String albumId;
-	String albumTitle;	
-	String albumHandle;
-	String albumType;
-	String albumUrl;
-	String artistName;
-	String artistUrl;
-	String albumDateReleased;	
-	String albumDateCreated;
-	String albumListens;
-	String albumPublisher;
-	
+    String albumId;
+    String albumTitle;
+    String albumHandle;
+    String albumUrl;
+    String albumType;
+    String artistName;
+    String artistUrl;
+    String albumProducer;
+    String albumEngineer;
+    String albumInformation;
+    String albumDateReleased;
+    String albumComments;
+    String albumFavorites;
+    String albumTracks;
+    String albumListens;
+    String albumDateCreated;
 	
 	public String getAlbumId()
 	{
@@ -114,14 +118,52 @@ public class Album
 	{
 		this.albumListens = albumListens;
 	}
-	
-	public String getAlbumPublisher()
-	{
-		return albumPublisher;
+
+	public String getAlbumProducer() {
+		return albumProducer;
 	}
-	
-	public void setAlbumPublisher(String albumPublisher)
-	{
-		this.albumPublisher = albumPublisher;
+
+	public void setAlbumProducer(String albumProducer) {
+		this.albumProducer = albumProducer;
+	}
+
+	public String getAlbumEngineer() {
+		return albumEngineer;
+	}
+
+	public void setAlbumEngineer(String albumEngineer) {
+		this.albumEngineer = albumEngineer;
+	}
+
+	public String getAlbumInformation() {
+		return albumInformation;
+	}
+
+	public void setAlbumInformation(String albumInformation) {
+		this.albumInformation = albumInformation;
+	}
+
+	public String getAlbumComments() {
+		return albumComments;
+	}
+
+	public void setAlbumComments(String albumComments) {
+		this.albumComments = albumComments;
+	}
+
+	public String getAlbumFavorites() {
+		return albumFavorites;
+	}
+
+	public void setAlbumFavorites(String albumFavorites) {
+		this.albumFavorites = albumFavorites;
+	}
+
+	public String getAlbumTracks() {
+		return albumTracks;
+	}
+
+	public void setAlbumTracks(String albumTracks) {
+		this.albumTracks = albumTracks;
 	}
 }

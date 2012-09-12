@@ -53,6 +53,7 @@ public class FMAConnector
 	 */
 	
 	/**
+	 * Creates a request url for the FMA API
 	 * @param dataset
 	 * @param args
 	 * @return
@@ -107,7 +108,7 @@ public class FMAConnector
 	 */
 	public String callWebService(String requestUrl)
 	{
-		String deviceId					= "xxxxx" ;   
+		String deviceId					= "xxxxx";   
 		
 		HttpClient httpclient			= new DefaultHttpClient();  
 		HttpGet request					= new HttpGet(requestUrl);  
@@ -175,7 +176,7 @@ public class FMAConnector
 	 * @param limit the number of records to fetch at once, between 1 and 20
 	 * @param page the page of the recordset to retrieve
 	 * @param sortBy A field to sort by (must be one of the returned values)
-	 * @param sortDir The directin to sort (asc or desc)
+	 * @param sortDir The direction to sort (asc or desc)
 	 * @return
 	 */
 	public TrackRecordSet getTrackRecordSet(String trackId, String artistId, String albumId,
@@ -640,17 +641,20 @@ public class FMAConnector
 		{
 			album.setAlbumId			(jsonAlbumObject.getString("album_id"));
 			album.setAlbumTitle			(jsonAlbumObject.getString("album_title"));
-			album.setAlbumHandle			(jsonAlbumObject.getString("album_handle"));
+			album.setAlbumHandle		(jsonAlbumObject.getString("album_handle"));
 			album.setAlbumType			(jsonAlbumObject.getString("album_type"));
 			album.setAlbumUrl			(jsonAlbumObject.getString("album_url"));
 			album.setArtistName			(jsonAlbumObject.getString("artist_name"));
 			album.setArtistUrl			(jsonAlbumObject.getString("artist_url"));
+			album.setAlbumProducer		(jsonAlbumObject.getString("album_producer"));
+			album.setAlbumEngineer		(jsonAlbumObject.getString("album_engineer"));
+			album.setAlbumInformation	(jsonAlbumObject.getString("album_information"));
 			album.setAlbumDateReleased	(jsonAlbumObject.getString("album_date_released"));
+			album.setAlbumComments		(jsonAlbumObject.getString("album_comments"));
+			album.setAlbumFavorites		(jsonAlbumObject.getString("album_favorites"));
+			album.setAlbumTracks		(jsonAlbumObject.getString("album_tracks"));
 			album.setAlbumDateCreated	(jsonAlbumObject.getString("album_date_created"));
 			album.setAlbumListens		(jsonAlbumObject.getString("album_listens"));
-			album.setAlbumPublisher		(jsonAlbumObject.getString("album_publisher"));
-
-
 		}
 		catch (JSONException e)
 		{
