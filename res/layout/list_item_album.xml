@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <LinearLayout
-        android:id="@+id/trackTitleArea"
+        android:id="@+id/albumTitleArea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/trackTitle"
+            android:id="@+id/albumTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Track Title"
+            android:text="Album Title"
             android:textAppearance="?android:attr/textAppearanceLarge" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/trackArtistArea"
+        android:id="@+id/albumArtistArea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/trackArtistLabel"
+            android:id="@+id/albumArtistLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Artist: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
+
         <TextView
-            android:id="@+id/trackArtist"
+            android:id="@+id/albumArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Artist"
@@ -40,23 +40,23 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/trackAlbumArea"
+        android:id="@+id/albumTracksArea"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/trackAlbumLabel"
+            android:id="@+id/albumTracksLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album: "
+            android:text="Total Tracks: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
-         
-         <TextView
-            android:id="@+id/trackAlbum"
+
+        <TextView
+            android:id="@+id/albumTracks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album"
+            android:text="0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
