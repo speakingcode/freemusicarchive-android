@@ -1,15 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/padding_medium"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
-
-</RelativeLayout>
+    android:layout_height="match_parent">
+    <!-- "Fragment A" -->
+    <fragment android:name="com.speakingcode.freemusicarchive.android.GenresViewerFragment"
+              android:id="@+id/genresFragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+</FrameLayout>

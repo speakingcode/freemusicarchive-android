@@ -173,7 +173,7 @@ public class FMAConnector
 	 * @param radioSafe include only radio safe tracks
 	 * @param minDuration include tracks at least as long as (must be in 'HH:MM:SS' format)
 	 * @param maxDuration include tracks no longer than (must be in 'HH:MM:SS' format)
-	 * @param limit the number of records to fetch at once, between 1 and 20
+	 * @param limit the number of records to fetch at once, between 1 and 50
 	 * @param page the page of the recordset to retrieve
 	 * @param sortBy A field to sort by (must be one of the returned values)
 	 * @param sortDir The direction to sort (asc or desc)
@@ -250,7 +250,9 @@ public class FMAConnector
 		if ( !(maxDuration == null || maxDuration == "" ) )
 			args.add("max_duration:" + maxDuration);
 		
-		args.add( (limit < 1 || limit > 20) ? ("limit:20") : ("limit:" + limit));
+		args.add( (limit < 1 || limit > 50) ? ("limit:50") : ("limit:" + limit));
+		
+		args.add( (page < 1 ) ? ("page:1") : ("page:" + page));
 		
 		if ( !(sortBy == null || sortBy == "" ))
 			args.add("sort_by:" + sortBy);
@@ -269,7 +271,7 @@ public class FMAConnector
 
 	/**
 	 * Convenience method for getting unfiltered, unsorted track record sets 
-	 * @param limit the number of records to pull, 1-20
+	 * @param limit the number of records to pull, 1-50
 	 * @param page the offset to pull from, with limit per page 
 	 * @return
 	 */
@@ -280,7 +282,7 @@ public class FMAConnector
 	
 	/**
 	 * Convenience method for getting unfiltered track record sets 
-	 * @param limit the number of records to pull, 1-20
+	 * @param limit the number of records to pull, 1-50
 	 * @param page the offset to pull from, with limit per page 
 	 * @param sortBy the returned field to sort by
 	 * @param sortDir the directino to sort ("asc" or "desc")
@@ -406,13 +408,28 @@ public class FMAConnector
 	/**
 	 * 
 	 */
-	public GenreRecordSet getGenreRecordSet()
+	public GenreRecordSet getGenreRecordSet(int limit, int page, String sortBy, String sortDir)
 	{
-		String responseJSON = callWebService(createJSONRequestUrl("genres", null));
+
+		//add the args to an array for the query url
+		//don't include null, empty or false fields.
+		ArrayList<String> args = new ArrayList<String>();
+		args.add( (limit < 1 || limit > 50) ? ("limit:50") : ("limit:" + limit));
+
+		args.add( (page < 1 ) ? ("page:1") : ("page:" + page));
+		
+		if ( !(sortBy == null || sortBy == "" ))
+			args.add("sort_by:" + sortBy);
+
+		if (sortDir == "asc" || sortDir == "desc")
+			args.add("sort_dir:" + sortDir);
+		
+		String responseJSON = callWebService(createJSONRequestUrl("genres", args));
 		
 		int totalItems			= getTotalItemsFromJSONResponse(responseJSON);
 		int totalPages			= getTotalPagesFromJSONResponse(responseJSON);
 		int currentPage			= getPageFromJSONResponse(responseJSON);
+		
 		return new GenreRecordSet(getGenreListFromJSONResponse(responseJSON), totalItems, totalPages, currentPage);
 
 	}
@@ -477,11 +494,11 @@ public class FMAConnector
 		Genre genre = new Genre();
 		try
 		{
-			genre.setGenreColor(jsonGenreObject.getString("genre_color"));
-			genre.setGenreHandle(jsonGenreObject.getString("genre_handle"));
-			genre.setGenreId(jsonGenreObject.getString("genre_id"));
-			genre.setGenreParentId(jsonGenreObject.getString("parent_id"));
-			genre.setGenreTitle(jsonGenreObject.getString("genre_title"));
+			genre.setGenreColor		(jsonGenreObject.getString("genre_color"));
+			genre.setGenreHandle	(jsonGenreObject.getString("genre_handle"));
+			genre.setGenreId		(jsonGenreObject.getString("genre_id"));
+		//	genre.setGenreParentId	(jsonGenreObject.getString("parent_id"));
+			genre.setGenreTitle		(jsonGenreObject.getString("genre_title"));
 		}
 		catch (JSONException e)
 		{
@@ -494,7 +511,24 @@ public class FMAConnector
 	
 	
 	
-	
+	/**
+	 * Retrieves the entire Genres Data Set
+	 * @return
+	 */
+	public GenreRecordSet getAllGenres()
+	{
+		//get the first record set, then append with subsequent page record sets
+		GenreRecordSet allGenres = getGenreRecordSet(50, 1, null, null);
+		GenreRecordSet moreGenres;
+		for (int i = 2; i <= allGenres.getTotalPages(); i++)
+		{
+			moreGenres = getGenreRecordSet(50, i, null, null);
+			allGenres.addGenres(moreGenres.getGenreRecords());
+			
+		}
+		
+		return allGenres;
+	}
 	
 	/**
 	 * **********************************************************
@@ -503,7 +537,7 @@ public class FMAConnector
 	 */
 	
 	/**
-	 * @param limit the number of records to fetch at once, between 1 and 20
+	 * @param limit the number of records to fetch at once, between 1 and 50
 	 * @param page the page of the recordset to retrieve
 	 * @param sortBy A field to sort by (must be one of the returned values)
 	 * @param sortDir The directin to sort (asc or desc)
@@ -537,7 +571,9 @@ public class FMAConnector
 		if ( !(albumTitle == null || albumTitle == "" ) )
 			args.add("album_title:" + albumTitle);
 		
-		args.add( (limit < 1 || limit > 20) ? ("limit:20") : ("limit:" + limit));
+		args.add( (limit < 1 || limit > 50) ? ("limit:50") : ("limit:" + limit));
+		
+		args.add( (page < 1 ) ? ("page:1") : ("page:" + page));
 		
 		if ( !(sortBy == null || sortBy == "" ))
 			args.add("sort_by:" + sortBy);
@@ -557,7 +593,7 @@ public class FMAConnector
 	
 	/**
 	 * Convenience method for getting unfiltered, unsorted album record sets 
-	 * @param limit the number of records to pull, 1-20
+	 * @param limit the number of records to pull, 1-50
 	 * @param page the offset to pull from, with limit per page 
 	 * @return
 	 */
@@ -568,7 +604,7 @@ public class FMAConnector
 	
 	/**
 	 * Convenience method for getting unfiltered album record sets 
-	 * @param limit the number of records to pull, 1-20
+	 * @param limit the number of records to pull, 1-50
 	 * @param page the offset to pull from, with limit per page 
 	 * @param sortBy the returned field to sort by
 	 * @param sortDir the directino to sort ("asc" or "desc")
@@ -688,7 +724,7 @@ public class FMAConnector
 		try
 		{
 			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
-			page = jsonResponseObject.getInt("page");
+			page = Integer.parseInt(jsonResponseObject.getString("page"));
 			
 		}
 		catch(JSONException e)
@@ -711,7 +747,7 @@ public class FMAConnector
 		try
 		{
 			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
-			totalPages = jsonResponseObject.getInt("pages");
+			totalPages = jsonResponseObject.getInt("total_pages");
 			
 		}
 		catch(JSONException e)
@@ -734,7 +770,7 @@ public class FMAConnector
 		try
 		{
 			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
-			totalItems = jsonResponseObject.getInt("total");
+			totalItems = Integer.parseInt(jsonResponseObject.getString("total"));
 			
 		}
 		catch(JSONException e)
