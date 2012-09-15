@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <!-- "Fragment A" -->
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+	<!-- genres  -->
     <fragment android:name="com.speakingcode.freemusicarchive.android.GenresViewerFragment"
               android:id="@+id/genresFragment"
               android:layout_width="match_parent"
               android:layout_height="match_parent"/>
-</FrameLayout>
+    <!-- albums -->
+    <fragment android:name="com.speakingcode.freemusicarchive.android.AlbumsViewerFragment"
+              android:id="@+id/albumsFragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+    <!-- tracks -->
+    <fragment android:name="com.speakingcode.freemusicarchive.android.TrackssViewerFragment"
+              android:id="@+id/trackssFragment"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"/>
+</LinearLayout>
