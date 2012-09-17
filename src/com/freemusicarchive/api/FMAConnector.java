@@ -34,7 +34,8 @@ public class FMAConnector
 	public static final String artistsAction		= "artists";
 	public static final String albumsAction			= "albums";
 	public static final String tracksAction			= "tracks";
-	final String TAG								= "FMAConnector";
+	
+	static String TAG								= "FMAConnector";
 	
 	
 	
@@ -52,7 +53,7 @@ public class FMAConnector
 	 * @param args
 	 * @return
 	 */
-	public String createRequestUrl(String dataset, ArrayList<String> args, String dataFormat)
+	public static String createRequestUrl(String dataset, ArrayList<String> args, String dataFormat)
 	{
 		String argString = "";
 		if (args != null)
@@ -85,7 +86,7 @@ public class FMAConnector
 	 * @param args The arguments to pass to the REST API
 	 * @return
 	 */
-	public String createJSONRequestUrl(String dataset, ArrayList<String> args)
+	public static String createJSONRequestUrl(String dataset, ArrayList<String> args)
 	{
 		return createRequestUrl(dataset, args, FMAConnector.dataFormatJson);
 	}
@@ -100,7 +101,7 @@ public class FMAConnector
 	 * @param requestUrl the URL to request
 	 * @return The string of the response from the HTTP request
 	 */
-	public String callWebService(String requestUrl)
+	public static String callWebService(String requestUrl)
 	{
 		String deviceId					= "xxxxx";   
 		
@@ -173,7 +174,7 @@ public class FMAConnector
 	 * @param sortDir The direction to sort (asc or desc)
 	 * @return
 	 */
-	public TrackRecordSet getTrackRecordSet(String trackId, String artistId, String albumId,
+	public static TrackRecordSet getTrackRecordSet(String trackId, String artistId, String albumId,
 			String genreId, String genreHandle, String artistHandle, String curatorHandle,
 			String albumUrl, String albumTitle, String albumHandle, boolean commercial,
 			boolean remix, boolean podcast, boolean video, boolean addedWeek, boolean addedMonth,
@@ -269,7 +270,7 @@ public class FMAConnector
 	 * @param page the offset to pull from, with limit per page 
 	 * @return
 	 */
-	public TrackRecordSet getTrackRecordSet(int limit, int page)
+	public static TrackRecordSet getTrackRecordSet(int limit, int page)
 	{
 		return getTrackRecordSet(limit, page, null, null);
 	}
@@ -282,7 +283,7 @@ public class FMAConnector
 	 * @param sortDir the directino to sort ("asc" or "desc")
 	 * @return
 	 */
-	public TrackRecordSet getTrackRecordSet(int limit, int page, String sortBy, String sortDir)
+	public static TrackRecordSet getTrackRecordSet(int limit, int page, String sortBy, String sortDir)
 	{
 		return getTrackRecordSet(null, null, null, null, null, null, null, null,
 				null, null, false, false, false, false, false, false, false,
@@ -296,7 +297,7 @@ public class FMAConnector
 	 * a track request.
 	 * @return an ArrayList of Track objects obtained from the response object
 	 */
-	public ArrayList<Track> getTrackListFromJSONResponse(String jsonTracksResponseString)
+	public static ArrayList<Track> getTrackListFromJSONResponse(String jsonTracksResponseString)
 	{
 		ArrayList<Track> trackList;
 		try
@@ -327,7 +328,7 @@ public class FMAConnector
 	 * @return an ArrayList of Track objects obtained from the responce object
 	 * @throws JSONException 
 	 */
-	public ArrayList<Track> getTrackListFromJSONResponse(JSONObject jsonTracksResponseObject)
+	public static ArrayList<Track> getTrackListFromJSONResponse(JSONObject jsonTracksResponseObject)
 			throws JSONException
 	{
 		ArrayList<Track> trackList = new ArrayList<Track>();
@@ -344,7 +345,7 @@ public class FMAConnector
 	 * @param jsonTrackObject the JSON object representing the track
 	 * @return a Track object with fields populated from the provided JSON object
 	 */
-	private Track getTrackFromJSONObject(JSONObject jsonTrackObject)
+	public static Track getTrackFromJSONObject(JSONObject jsonTrackObject)
 	{
 		Track track = new Track();
 		try
@@ -402,7 +403,7 @@ public class FMAConnector
 	/**
 	 * 
 	 */
-	public GenreRecordSet getGenreRecordSet(int limit, int page, String sortBy, String sortDir)
+	public static GenreRecordSet getGenreRecordSet(int limit, int page, String sortBy, String sortDir)
 	{
 
 		//add the args to an array for the query url
@@ -435,7 +436,7 @@ public class FMAConnector
 	 * a genre request.
 	 * @return an ArrayList of Genre objects obtained from the response object
 	 */
-	public ArrayList<Genre> getGenreListFromJSONResponse(String jsonGenresResponseString)
+	public static ArrayList<Genre> getGenreListFromJSONResponse(String jsonGenresResponseString)
 	{
 		ArrayList<Genre> genreList;
 		try
@@ -466,7 +467,7 @@ public class FMAConnector
 	 * @return an ArrayList of Genre objects obtained from the response object
 	 * @throws JSONException 
 	 */
-	public ArrayList<Genre> getGenreListFromJSONResponse(JSONObject jsonGenreResponseObject)
+	public static ArrayList<Genre> getGenreListFromJSONResponse(JSONObject jsonGenreResponseObject)
 			throws JSONException
 	{
 		ArrayList<Genre> genreList = new ArrayList<Genre>();
@@ -483,7 +484,7 @@ public class FMAConnector
 	 * @param jsonTrackObject the JSON object representing the genre
 	 * @return a Genre object with fields populated from the proviced JSON object
 	 */
-	public Genre getGenreFromJSONObject(JSONObject jsonGenreObject)
+	public static Genre getGenreFromJSONObject(JSONObject jsonGenreObject)
 	{
 		Genre genre = new Genre();
 		try
@@ -509,7 +510,7 @@ public class FMAConnector
 	 * Retrieves the entire Genres Data Set, sorted by title
 	 * @return
 	 */
-	public GenreRecordSet getAllGenres()
+	public static GenreRecordSet getAllGenres()
 	{
 		//get the first record set, then append with subsequent page record sets
 		GenreRecordSet allGenres = getGenreRecordSet(50, 1, "genre_title", "asc");
@@ -537,7 +538,7 @@ public class FMAConnector
 	 * @param sortDir The directin to sort (asc or desc)
 	 * @return
 	 */
-	public AlbumRecordSet getAlbumRecordSet(String albumHandle, String artistId, String artistHandle, String genreHandle,
+	public static AlbumRecordSet getAlbumRecordSet(String albumHandle, String artistId, String artistHandle, String genreHandle,
 			String curatorHandle, String albumUrl, String albumTitle, int limit, int page, String sortBy, String sortDir)
 	{
 		//add the args to an array for the query url
@@ -591,7 +592,7 @@ public class FMAConnector
 	 * @param page the offset to pull from, with limit per page 
 	 * @return
 	 */
-	public AlbumRecordSet getAlbumRecordSet(int limit, int page)
+	public static AlbumRecordSet getAlbumRecordSet(int limit, int page)
 	{
 		return getAlbumRecordSet(limit, page, null, null);
 	}
@@ -604,7 +605,7 @@ public class FMAConnector
 	 * @param sortDir the directino to sort ("asc" or "desc")
 	 * @return
 	 */
-	public AlbumRecordSet getAlbumRecordSet(int limit, int page, String sortBy, String sortDir)
+	public static AlbumRecordSet getAlbumRecordSet(int limit, int page, String sortBy, String sortDir)
 	{
 		return getAlbumRecordSet(null, null, null, null, null, null, null, limit, page, sortBy, sortDir);
 	}
@@ -618,7 +619,7 @@ public class FMAConnector
 	 * @param sortDir
 	 * @return
 	 */
-	public AlbumRecordSet getAlbumRecordSetWithGenreHandle(String genreHandle, int limit, int page,
+	public static AlbumRecordSet getAlbumRecordSetWithGenreHandle(String genreHandle, int limit, int page,
 			String sortBy, String sortDir)
 	{
 		 return getAlbumRecordSet(null, null, null, genreHandle, null, null, null, limit, page, sortBy, sortDir);
@@ -631,7 +632,7 @@ public class FMAConnector
 	 * a album request.
 	 * @return an ArrayList of Album objects obtained from the response object
 	 */
-	public ArrayList<Album> getAlbumListFromJSONResponse(String jsonAlbumsResponseString)
+	public static ArrayList<Album> getAlbumListFromJSONResponse(String jsonAlbumsResponseString)
 	{
 		ArrayList<Album> albumList;
 		try
@@ -662,7 +663,7 @@ public class FMAConnector
 	 * @return an ArrayList of Album objects obtained from the responce object
 	 * @throws JSONException 
 	 */
-	public ArrayList<Album> getAlbumListFromJSONResponse(JSONObject jsonAlbumsResponseObject)
+	public static ArrayList<Album> getAlbumListFromJSONResponse(JSONObject jsonAlbumsResponseObject)
 			throws JSONException
 	{
 		ArrayList<Album> albumList = new ArrayList<Album>();
@@ -679,7 +680,7 @@ public class FMAConnector
 	 * @param jsonAlbumObject the JSON object representing the album
 	 * @return a Album object with fields populated from the provided JSON object
 	 */
-	private Album getAlbumFromJSONObject(JSONObject jsonAlbumObject)
+	public static Album getAlbumFromJSONObject(JSONObject jsonAlbumObject)
 	{
 		Album album = new Album();
 		try
@@ -712,11 +713,12 @@ public class FMAConnector
 	
 	
 	/**
-	 * Gets all albums from a particular genre
+	 * Gets all albums from a particular genre.<br>
+	 * This may take quite a bit of time for multiple calls over the network complete. 
 	 * @param ganreHandle
 	 * @return
 	 */
-	public AlbumRecordSet getlAllAlbumsWithGenreHandle(String genreHandle)
+	public static AlbumRecordSet getlAllAlbumsWithGenreHandle(String genreHandle)
 	{
 		
 		//get the first record set, then append with subsequent page record sets
@@ -746,7 +748,7 @@ public class FMAConnector
 	 * @param jsonResponseString
 	 * @return
 	 */
-	private int getPageFromJSONResponse(String jsonResponseString)
+	private static int getPageFromJSONResponse(String jsonResponseString)
 	{
 		int page = -1;
 		try
@@ -769,7 +771,7 @@ public class FMAConnector
 	 * @param jsonResponseString
 	 * @return
 	 */
-	private int getTotalPagesFromJSONResponse(String jsonResponseString)
+	private static int getTotalPagesFromJSONResponse(String jsonResponseString)
 	{
 		int totalPages = -1;
 		try
@@ -792,14 +794,13 @@ public class FMAConnector
 	 * @param jsonResponseString
 	 * @return
 	 */
-	private int getTotalItemsFromJSONResponse(String jsonResponseString)
+	private static int getTotalItemsFromJSONResponse(String jsonResponseString)
 	{
 		int totalItems = -1;
 		try
 		{
 			JSONObject jsonResponseObject = new JSONObject(jsonResponseString);
 			totalItems = Integer.parseInt(jsonResponseObject.getString("total"));
-			
 		}
 		catch(JSONException e)
 		{

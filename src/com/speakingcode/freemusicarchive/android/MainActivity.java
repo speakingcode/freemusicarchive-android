@@ -19,8 +19,6 @@ implements IGenresViewerClickHandler
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FMAConnector fmac = new FMAConnector();
-        fmac.getTrackRecordSet(10,1);
     }
 
     @Override

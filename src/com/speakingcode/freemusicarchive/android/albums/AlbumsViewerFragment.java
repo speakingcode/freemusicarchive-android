@@ -10,9 +10,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.freemusicarchive.api.FMAConnector;
 import com.freemusicarchive.api.Album;
 import com.freemusicarchive.api.AlbumRecordSet;
+import com.freemusicarchive.api.FMAConnector;
 import com.speakingcode.freemusicarchive.android.R;
 
 public class AlbumsViewerFragment extends Fragment
@@ -60,14 +60,26 @@ public class AlbumsViewerFragment extends Fragment
 		
 	}
 	
-	public void initializePullData(String genreHandle)
+	public void initializePullData(final String genreHandle)
 	{
-		this.genreHandle = genreHandle;
-		//TODO implement controller and make this async
-		FMAConnector fmac = new FMAConnector();
-		AlbumRecordSet ars = fmac.getlAllAlbumsWithGenreHandle(genreHandle);
-		albumsArrayAdapter = new AlbumArrayAdapter(this.getActivity(), R.layout.list_item_album, ars.getAlbumRecords() );
-	}
-	
+		//this.genreHandle = genreHandle;
+		new Thread()
+		{
+			public void run()
+			{
 
+				//TODO implement controller and make this async
+				FMAConnector fmac = new FMAConnector();
+				AlbumRecordSet ars = fmac.getlAllAlbumsWithGenreHandle(genreHandle);
+				albumsArrayAdapter = new AlbumArrayAdapter(AlbumsViewerFragment.this.getActivity(), R.layout.list_item_album, ars.getAlbumRecords() );
+				AlbumsViewerFragment.this.getActivity().runOnUiThread(new Runnable()
+				{
+					public void run()
+					{
+						albumsListView.setAdapter(albumsArrayAdapter);
+					}
+				});
+			}
+		}.start();
+	}
 }
