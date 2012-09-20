@@ -68,8 +68,7 @@ public class GenresViewerFragment extends Fragment
 			public void run()
 			{
 				//TODO implement controller and make this async
-				FMAConnector fmac = new FMAConnector();
-				GenreRecordSet grs = fmac.getAllGenres();
+				GenreRecordSet grs = FMAConnector.getAllGenres();
 				genresArrayAdapter = new GenreArrayAdapter(GenresViewerFragment.this.getActivity(), R.layout.list_item_genre, grs.getGenreRecords() );
 				GenresViewerFragment.this.getActivity().runOnUiThread(new Runnable()
 				{

@@ -46,17 +46,17 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/trackAlbumLabel"
+            android:id="@+id/trackDurationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album: "
+            android:text="Length: "
             android:textAppearance="?android:attr/textAppearanceMedium" />
          
          <TextView
-            android:id="@+id/trackAlbum"
+            android:id="@+id/trackDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album"
+            android:text="Duration"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 

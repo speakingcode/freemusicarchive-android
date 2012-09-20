@@ -18,9 +18,9 @@ import com.speakingcode.freemusicarchive.android.R;
 public class AlbumsViewerFragment extends Fragment
 {
 	protected String TAG = "AlbumsViewerFragment";
+	
 	protected ListView albumsListView;
 	protected AlbumArrayAdapter albumsArrayAdapter;
-	protected String genreHandle;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -40,7 +40,10 @@ public class AlbumsViewerFragment extends Fragment
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		albumsListView = (ListView) view.findViewById(R.id.albumsListView);
+		
+		albumsListView.setEmptyView(getActivity().findViewById(android.R.id.empty));
 		albumsListView.setAdapter(albumsArrayAdapter);
+		
 		albumsListView.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -69,8 +72,7 @@ public class AlbumsViewerFragment extends Fragment
 			{
 
 				//TODO implement controller and make this async
-				FMAConnector fmac = new FMAConnector();
-				AlbumRecordSet ars = fmac.getlAllAlbumsWithGenreHandle(genreHandle);
+				AlbumRecordSet ars = FMAConnector.getlAllAlbumsWithGenreHandle(genreHandle);
 				albumsArrayAdapter = new AlbumArrayAdapter(AlbumsViewerFragment.this.getActivity(), R.layout.list_item_album, ars.getAlbumRecords() );
 				AlbumsViewerFragment.this.getActivity().runOnUiThread(new Runnable()
 				{

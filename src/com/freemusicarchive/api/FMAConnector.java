@@ -291,6 +291,22 @@ public class FMAConnector
 	}
 	
 	/**
+	 * Convenience method for getting a track record set from a particular album (by handle)
+	 * @param limit the number of records to pull, 1-50
+	 * @param page the offset to pull from, with limit per page 
+	 * @param sortBy the returned field to sort by
+	 * @param sortDir the directino to sort ("asc" or "desc")
+	 * @return
+	 */
+	private static TrackRecordSet getTrackRecordSetWithAlbumHandle(
+			String albumHandle, int limit, int page, String sortBy, String sortDir)
+	{
+		return getTrackRecordSet(null, null, null, null, null, null, null, null,
+				null, albumHandle, false, false, false, false, false, false, false,
+				false, null,null, limit, page, null, null);
+	}
+	
+	/**
 	 * Parses a String representation of a JSON track query response object
 	 * and returns an ArrayList of Track objects obtained from the response object
 	 * @param jsonTracksResponseString a String representation of a JSON object response from
@@ -391,15 +407,34 @@ public class FMAConnector
 		return track;
 	}
 	
-	
+	/**
+	 * Gets all albums from a particular genre, sorted.<br>
+	 * This may take quite a bit of time for multiple calls over the network complete. 
+	 * @param ganreHandle
+	 * @return
+	 */
+	public static TrackRecordSet getlAllTracksWithAlbumHandle(String albumHandle)
+	{
+		
+		//get the first record set, then append with subsequent page record sets
+		TrackRecordSet allTracks = getTrackRecordSetWithAlbumHandle(albumHandle, 50, 1, "album_title", "asc");
+		TrackRecordSet moreTracks;
+		for (int i = 2; i <= allTracks.getTotalPages(); i++)
+		{
+			moreTracks = getTrackRecordSetWithAlbumHandle(albumHandle, 50, i, "album_title", null);
+			allTracks.addTracks(moreTracks.getTrackRecords());
+
+		}
+
+		return allTracks;
+	}
 	
 	/**
 	 * **********************************************************
 	 * **********************Genre Records***********************
 	 * **********************************************************
 	 */
-	
-	
+
 	/**
 	 * 
 	 */
@@ -713,7 +748,7 @@ public class FMAConnector
 	
 	
 	/**
-	 * Gets all albums from a particular genre.<br>
+	 * Gets all albums from a particular genre, sorted.<br>
 	 * This may take quite a bit of time for multiple calls over the network complete. 
 	 * @param ganreHandle
 	 * @return
@@ -722,7 +757,7 @@ public class FMAConnector
 	{
 		
 		//get the first record set, then append with subsequent page record sets
-		AlbumRecordSet allAlbums = getAlbumRecordSetWithGenreHandle(genreHandle, 50, 1, "genre_title", "asc");
+		AlbumRecordSet allAlbums = getAlbumRecordSetWithGenreHandle(genreHandle, 50, 1, "album_title", "asc");
 		AlbumRecordSet moreAlbums;
 		for (int i = 2; i <= allAlbums.getTotalPages(); i++)
 		{

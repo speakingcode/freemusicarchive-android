@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
-	<!-- genres  -->
-    <fragment android:name="com.speakingcode.freemusicarchive.android.genres.GenresViewerFragment"
-              android:id="@+id/genresFragment"
+	<!-- albums  -->
+    <fragment android:name="com.speakingcode.freemusicarchive.android.albums.AlbumsViewerFragment"
+              android:id="@+id/albumsFragment"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              />
+             />
 </LinearLayout>
