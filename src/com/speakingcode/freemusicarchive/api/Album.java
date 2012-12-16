@@ -1,6 +1,12 @@
-package com.freemusicarchive.api;
+package com.speakingcode.freemusicarchive.api;
+
+import android.graphics.Bitmap;
+
+import com.speakingcode.android.imageFetcher.IImageFetcherItem;
 
 public class Album
+implements Comparable<Album>,
+	IImageFetcherItem
 {
     String albumId;
     String albumTitle;
@@ -18,7 +24,10 @@ public class Album
     String albumTracks;
     String albumListens;
     String albumDateCreated;
+    String albumImageFile;
 	
+
+
 	public String getAlbumId()
 	{
 		return albumId;
@@ -166,4 +175,81 @@ public class Album
 	public void setAlbumTracks(String albumTracks) {
 		this.albumTracks = albumTracks;
 	}
+	
+	public String getAlbumImageFile()
+	{
+		return albumImageFile;
+	}
+
+	public void setAlbumImageFile(String albumImageFile)
+	{
+		this.albumImageFile = albumImageFile;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((albumHandle == null) ? 0 : albumHandle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Album other = (Album) obj;
+		if (albumHandle == null) {
+			if (other.albumHandle != null)
+				return false;
+		} else if (!albumHandle.equals(other.albumHandle))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(Album another)
+	{
+		if (this == another)
+			return 0;
+		if (another == null)
+			return -1;
+		if (albumHandle == null) {
+			if (another.albumHandle != null)
+				return 1;
+		}
+		return albumHandle.compareTo(another.getAlbumHandle());
+	}
+
+	@Override
+	public void setFeaturedImage(Bitmap featuredImage)
+	{
+		
+	}
+
+	@Override
+	public Bitmap getFeaturedImage()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setFeatuedImageUrl(String url)
+	{
+		this.setAlbumImageFile(url);
+	}
+
+	@Override
+	public String getFeaturedImageUrl()
+	{
+		return this.getAlbumImageFile();
+	}
+	
+	
 }

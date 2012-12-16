@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.freemusicarchive.api.Album;
 import com.speakingcode.freemusicarchive.android.R;
+import com.speakingcode.freemusicarchive.api.Album;
 
 public class AlbumArrayAdapter extends ArrayAdapter<Album>
 {

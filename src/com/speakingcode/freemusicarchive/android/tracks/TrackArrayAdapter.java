@@ -1,3 +1,21 @@
+/*
+ *  Free Music Archive - Download Free Music legally from the FreeMusicArchive
+ *  Copyright (C) 2012  Daniel Lissner (http://speakingcode.com)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.speakingcode.freemusicarchive.android.tracks;
 
 import java.util.List;
@@ -10,8 +28,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.freemusicarchive.api.Track;
 import com.speakingcode.freemusicarchive.android.R;
+import com.speakingcode.freemusicarchive.api.Track;
 
 public class TrackArrayAdapter extends ArrayAdapter<Track>
 {
@@ -41,15 +59,7 @@ public class TrackArrayAdapter extends ArrayAdapter<Track>
 		
 		TextView title = ((TextView) listItemView.findViewById(R.id.trackTitle));
 		if (title != null)
-			title.setText(tracks.get(position).getTrackTitle());
-		
-		TextView artist = ((TextView) listItemView.findViewById(R.id.trackArtist));
-		if (artist != null)
-			artist.setText(tracks.get(position).getArtistName());
-		
-		TextView duration = ((TextView) listItemView.findViewById(R.id.trackDuration));
-		if(tracks != null)
-			duration.setText(tracks.get(position).getTrackDuration());
+			title.setText(tracks.get(position).getTrackTitle() + " - " + tracks.get(position).getTrackDuration());
 		
 		return listItemView;
 	}

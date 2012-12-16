@@ -10,12 +10,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.freemusicarchive.api.Album;
-import com.freemusicarchive.api.AlbumRecordSet;
-import com.freemusicarchive.api.FMAConnector;
 import com.speakingcode.freemusicarchive.android.R;
+import com.speakingcode.freemusicarchive.api.Album;
+import com.speakingcode.freemusicarchive.api.AlbumController;
+import com.speakingcode.freemusicarchive.api.AlbumRecordSet;
+import com.speakingcode.freemusicarchive.api.FMAConnector;
+import com.speakingcode.freemusicarchive.api.IAlbumControllerObserver;
 
 public class AlbumsViewerFragment extends Fragment
+	implements IAlbumControllerObserver
 {
 	protected String TAG = "AlbumsViewerFragment";
 	
@@ -39,11 +42,7 @@ public class AlbumsViewerFragment extends Fragment
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
-		albumsListView = (ListView) view.findViewById(R.id.albumsListView);
-		
-		albumsListView.setEmptyView(getActivity().findViewById(android.R.id.empty));
-		albumsListView.setAdapter(albumsArrayAdapter);
-		
+		albumsListView = (ListView) view.findViewById(R.id.albumsListView);		
 		albumsListView.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -65,23 +64,28 @@ public class AlbumsViewerFragment extends Fragment
 	
 	public void initializePullData(final String genreHandle)
 	{
-		//this.genreHandle = genreHandle;
-		new Thread()
+		AlbumController ac = AlbumController.getInstance();
+		ac.addObserver(this);
+		ac.getAllAlbumsWithGenreHandle(genreHandle);
+
+	}
+
+	@Override
+	public void onGetAlbumRecordSetSuccess(final AlbumRecordSet ars)
+	{
+		getActivity().runOnUiThread(new Runnable()
 		{
 			public void run()
 			{
-
-				//TODO implement controller and make this async
-				AlbumRecordSet ars = FMAConnector.getlAllAlbumsWithGenreHandle(genreHandle);
-				albumsArrayAdapter = new AlbumArrayAdapter(AlbumsViewerFragment.this.getActivity(), R.layout.list_item_album, ars.getAlbumRecords() );
-				AlbumsViewerFragment.this.getActivity().runOnUiThread(new Runnable()
-				{
-					public void run()
-					{
-						albumsListView.setAdapter(albumsArrayAdapter);
-					}
-				});
+				albumsArrayAdapter = new AlbumArrayAdapter
+				(
+					AlbumsViewerFragment.this.getActivity(),
+					R.layout.list_item_album,
+					ars.getAlbumRecords()
+				);
+				
+				albumsListView.setAdapter(albumsArrayAdapter);
 			}
-		}.start();
+		});
 	}
 }

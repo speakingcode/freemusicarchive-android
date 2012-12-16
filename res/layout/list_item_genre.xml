@@ -3,8 +3,9 @@
     android:id="@+id/genreTitleArea"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/list_item_button"
-    android:orientation="horizontal" >
+    android:background="#eeeeee"
+    android:orientation="horizontal"
+    android:padding="5dp" >
 
     <TextView
         android:id="@+id/genreTitle"

@@ -2,11 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
-	<!-- albums  -->
-    <fragment android:name="com.speakingcode.freemusicarchive.android.albums.AlbumsViewerFragment"
-              android:id="@+id/albumsFragment"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-             />
+    android:orientation="horizontal" >
+
+    <!-- albums -->
+
+    <fragment
+        android:id="@+id/albumsFragment"
+        android:name="com.speakingcode.freemusicarchive.android.albums.AlbumsViewerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+  
+
 </LinearLayout>

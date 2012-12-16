@@ -1,6 +1,6 @@
 package com.speakingcode.freemusicarchive.android.albums;
 
-import com.freemusicarchive.api.Album;
+import com.speakingcode.freemusicarchive.api.Album;
 
 public interface IAlbumsViewerClickHandler
 {

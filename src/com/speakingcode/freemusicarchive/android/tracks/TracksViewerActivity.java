@@ -1,16 +1,18 @@
 package com.speakingcode.freemusicarchive.android.tracks;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
-import com.freemusicarchive.api.Album;
 import com.speakingcode.freemusicarchive.android.R;
-import com.speakingcode.freemusicarchive.android.albums.IAlbumsViewerClickHandler;
+import com.speakingcode.freemusicarchive.api.Album;
+import com.speakingcode.freemusicarchive.api.Track;
+import com.speakingcode.freemusicarchive.api.TrackDownloadController;
 
 public class TracksViewerActivity extends FragmentActivity
-implements	IAlbumsViewerClickHandler
+implements	ITracksViewerClickHandler
 {
 
     @Override
@@ -34,10 +36,11 @@ implements	IAlbumsViewerClickHandler
     }
 
 	@Override
-	public void onAlbumItemClicked(Album clickedAlbum)
+	public void onTrackItemClicked(Track clickedTrack)
 	{
-		Intent intent = new Intent(this, TracksViewerActivity.class);
-		intent.putExtra("albumHandle", clickedAlbum.getAlbumHandle());
+		//String uri = TrackDownloadController.getDownloadUrl(clickedTrack.getTrackUrl());
+		String uri = clickedTrack.getTrackUrl() + "/download";
+		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 		startActivity(intent);
 	}
 

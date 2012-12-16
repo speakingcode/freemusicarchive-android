@@ -10,10 +10,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.freemusicarchive.api.FMAConnector;
-import com.freemusicarchive.api.Genre;
-import com.freemusicarchive.api.GenreRecordSet;
 import com.speakingcode.freemusicarchive.android.R;
+import com.speakingcode.freemusicarchive.api.Genre;
+import com.speakingcode.freemusicarchive.api.GenreConnector;
+import com.speakingcode.freemusicarchive.api.GenreRecordSet;
 
 public class GenresViewerFragment extends Fragment
 {
@@ -41,7 +41,7 @@ public class GenresViewerFragment extends Fragment
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		genresListView = (ListView) view.findViewById(R.id.genresListView);
-		genresListView.setAdapter(genresArrayAdapter);
+	//	genresListView.setAdapter(genresArrayAdapter);
 		genresListView.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -68,7 +68,7 @@ public class GenresViewerFragment extends Fragment
 			public void run()
 			{
 				//TODO implement controller and make this async
-				GenreRecordSet grs = FMAConnector.getAllGenres();
+				GenreRecordSet grs = GenreConnector.getAllGenres();
 				genresArrayAdapter = new GenreArrayAdapter(GenresViewerFragment.this.getActivity(), R.layout.list_item_genre, grs.getGenreRecords() );
 				GenresViewerFragment.this.getActivity().runOnUiThread(new Runnable()
 				{

@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
-import com.freemusicarchive.api.Album;
 import com.speakingcode.freemusicarchive.android.R;
 import com.speakingcode.freemusicarchive.android.tracks.TracksViewerActivity;
+import com.speakingcode.freemusicarchive.api.Album;
 
 public class AlbumsViewerActivity extends FragmentActivity
 implements	IAlbumsViewerClickHandler

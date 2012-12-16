@@ -1,6 +1,6 @@
 package com.speakingcode.freemusicarchive.android.tracks;
 
-import com.freemusicarchive.api.Track;
+import com.speakingcode.freemusicarchive.api.Track;
 
 public interface ITracksViewerClickHandler
 {

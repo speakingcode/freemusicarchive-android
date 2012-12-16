@@ -1,12 +1,14 @@
-package com.freemusicarchive.api;
+package com.speakingcode.freemusicarchive.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class AlbumRecordSet
 {
-	ArrayList<Album> albumRecords;
+	List<Album> albumRecords;
 	int total;
 	int totalPages;
 	int currentPage;
@@ -14,6 +16,8 @@ public class AlbumRecordSet
 	public AlbumRecordSet(ArrayList<Album> records, int total, int totalPages, int currentPage)
 	{
 		this.albumRecords	= records;
+		Collections.sort(albumRecords);
+
 		this.total			= total;
 		this.totalPages		= totalPages;
 		this.currentPage	= currentPage;
@@ -50,7 +54,7 @@ public class AlbumRecordSet
 		this.currentPage = currentPage;
 	}
 
-	public ArrayList<Album> getAlbumRecords()
+	public List<Album> getAlbumRecords()
 	{
 		return albumRecords;
 	}
@@ -60,9 +64,10 @@ public class AlbumRecordSet
 		this.albumRecords = records;
 	}
 	
-	public void addAlbums(ArrayList<Album> newAlbums)
+	public void addAlbums(List<Album> newAlbums)
 	{
 		this.albumRecords.addAll(newAlbums);
+		Collections.sort(albumRecords);
 	}
 	
 	public void addAlbum(Album newAlbum)

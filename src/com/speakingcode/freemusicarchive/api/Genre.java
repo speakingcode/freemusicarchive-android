@@ -1,4 +1,4 @@
-package com.freemusicarchive.api;
+package com.speakingcode.freemusicarchive.api;
 
 public class Genre
 {
